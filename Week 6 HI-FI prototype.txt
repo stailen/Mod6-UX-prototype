@@ -1,0 +1,37 @@
+﻿Hi-Fi Prototype
+Tutorial 6 Group 6
+Oguz Kaan Aydin s2959380
+Sebastian Dorobantu s3047504
+Stefano de Ruiter s3288315
+Vladislava Grushitskaya s3519260
+Luuk Velthuis s2403056
+
+        
+Reflection
+In the previous phase, we had a more UI focused approach to our Lo-Fi prototype. If we had to do this again, we would make it more UX focused. We would test which measuring devices
+
+
+GOAL: 
+
+
+Chapter 5.1 – Introduction (max 1 page)
+* Present the key interactions that you are focusing on.
+   * Inputting data using computer vision.
+   * User getting feedback from the app
+* Try to rewrite the informal research goal (see examples in step 2) to a proper research question that you want to answer with the small scale user study (in week 8) For example: “we want to know if talking works better than typing for our use-case” could become the RQ “To what extent does speech interaction make the conversation with our chatbot feel more natural, compared to keyboard input?”
+   * Are users more inclined to follow sleep and exercise advice if they have concrete feedback from our app
+
+
+Chapter 5.2 – Methods and materials (max 1 page)
+* Present a clear and structured plan of action for building your hi-fi prototype. This plan should explain how you will translate the key interactions into a working prototype. Make sure to address the following elements (see examples and explanations in step 3 above).
+   *  Advanced interactions: Describe the advanced or intelligent interactions you will implement or simulate, how they will function in real-time, and which elements will be interactive.
+      * Exercise tracking using a computer vision model, this model will evaluate the amount of movement and intensity. We ask users to move using a selected set of exercises.
+      * After the exercises the system will give feedback based on the performance evaluated by a score system developed by us, criteria for this is speed of movement and range of motion.
+   * Tools and technologies used: Specify all hardware, software, APIs, frameworks, datasets, or equipment you will use. Explain how these technologies support the prototype and whether they require reservation or integration.
+      * For computer vision we would need a camera, and a decent laptop to run the model. We will use the ViTPose software to approximate human motions and calculate the exercise that is done.
+      * For the testing in this phase we need to create a dataset ourselves, because we don’t have the time to track the data during testing. We will ask the user beforehand what their previous day looked like and make an example dataset from that to make it more realistic. Then during testing we would make the user exercise a bit and make it so the dataset reflects it.
+      * For the actual application we will use the ‘svelte’ framework as the application frontend and python for the application backend.
+   * Task division and dependencies: Outline who is responsible for each part of the development, the timeline for completing components, and the dependencies between tasks (e.g., UI before coding, equipment before testing).
+      * Stefano, Sebastian are responsible for the backend, including calculations and computer vision.
+      * Luuk and Vlada are responsible for frontend development.
+      * Oguz is responsible for data interpretation and validation; all others will follow the lead and assist during testing.
