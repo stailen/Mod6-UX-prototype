@@ -20,18 +20,32 @@ PoseLandmarkerOptions = mp.tasks.vision.PoseLandmarkerOptions
 PoseLandmarkerResult = mp.tasks.vision.PoseLandmarkerResult
 VisionRunningMode = mp.tasks.vision.RunningMode
 
+#data storage
+score = 0
+prev_results = None
+
 #callback
 def proc_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_ms: int): # type: ignore
     img = output_image.numpy_view().copy()
     out_h, out_w = img.shape[:2]
+    global prev_results
+    global score
 
     if not result.pose_landmarks:
         return
     for pose_landmarks in result.pose_landmarks:
         # draw keypoints
-        for lm in pose_landmarks:
+        for idx, lm in enumerate(pose_landmarks):
             px = int(lm.x * out_w)
             py = int(lm.y * out_h)
+            if prev_results is not None:
+                prev_current_lm = prev_results.pose_landmarks[0][idx]
+                delta_x = abs(prev_current_lm.x - lm.x) * out_w
+                delta_y = abs(prev_current_lm.y - lm.y) * out_h
+                score += delta_x + delta_y
+                prev_results = result
+            else:
+                prev_results = result
             #skip points that are outside the image bounds
             if 0 <= px < out_w and 0 <= py < out_h:
                 cv2.circle(img, (px, py), radius=3, color=(0,255,0), thickness=-1)
@@ -62,6 +76,7 @@ with PoseLandmarker.create_from_options(options) as landmarker:
         else:
             cv2.imshow("annotated", frame)
         if cv2.waitKey(1) & 0xFF == 27:  # ESC to quit
+            print("congrats your score is: ", score)
             break
 cap.release()
 cv2.destroyAllWindows()
