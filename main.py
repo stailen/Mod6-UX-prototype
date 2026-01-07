@@ -2,7 +2,7 @@ import sys
 from PySide6.QtWidgets import QApplication, QFormLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
 from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
-
+import landmarks.main as movement_ai
 
 class MainWindow(QMainWindow):
 
@@ -98,7 +98,9 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(button_layout)
     
     def on_ai_button_clicked(self):
+        score = movement_ai.main
         print("Getting AI recommendations...")
+        print("your score is: ", score)
     
     def on_workout_button_clicked(self):
         print("Logging workout...")
