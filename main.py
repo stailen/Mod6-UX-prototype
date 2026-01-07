@@ -1,6 +1,6 @@
 import sys
 from PySide6.QtWidgets import QApplication, QFormLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
-from PySide6.QtGui import QColor, QFont
+from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 
 
@@ -9,7 +9,7 @@ class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
         self.setWindowTitle("Health & Fitness Tracker")
-        self.setGeometry(5000, 5000, 700, 1000)
+        self.setGeometry(2000, 2000, 500, 700)
         
         # Create central widget and layout
         central_widget = QWidget()
@@ -75,7 +75,7 @@ class MainWindow(QMainWindow):
         button_layout.setSpacing(10)
         
         # AI Recommendations button
-        ai_button = QPushButton("🤖 Get AI Recommendations")
+        ai_button = QPushButton("🤖 Start Exercise Video")
         ai_button.setStyleSheet("background-color: #3b82f6; color: white; padding: 10px; border-radius: 5px; font-weight: bold;")
         ai_button.clicked.connect(self.on_ai_button_clicked)
         button_layout.addWidget(ai_button)
