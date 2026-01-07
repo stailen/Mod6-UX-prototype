@@ -75,20 +75,23 @@ class MainWindow(QMainWindow):
         button_layout.setSpacing(10)
         
         # AI Recommendations button
-        ai_button = QPushButton("🤖 Start Exercise Video")
-        ai_button.setStyleSheet("background-color: #3b82f6; color: white; padding: 10px; border-radius: 5px; font-weight: bold;")
+        ai_button = QPushButton("▶ Start Exercise Video")
+        ai_button.setStyleSheet("background-color: #3b82f6; color: white; padding: 15px; border-radius: 20px; font-weight: bold; font-size: 16px;")
+        ai_button.setMinimumHeight(50)
         ai_button.clicked.connect(self.on_ai_button_clicked)
         button_layout.addWidget(ai_button)
         
         # Log Workout button
         workout_button = QPushButton("📝 Log Workout")
-        workout_button.setStyleSheet("background-color: #10b981; color: white; padding: 10px; border-radius: 5px; font-weight: bold;")
+        workout_button.setStyleSheet("background-color: #10b981; color: white; padding: 15px; border-radius: 20px; font-weight: bold; font-size: 16px;")
+        workout_button.setMinimumHeight(50)
         workout_button.clicked.connect(self.on_workout_button_clicked)
         button_layout.addWidget(workout_button)
         
         # View Progress button
         progress_button = QPushButton("📊 View Progress")
-        progress_button.setStyleSheet("background-color: #f59e0b; color: white; padding: 10px; border-radius: 5px; font-weight: bold;")
+        progress_button.setStyleSheet("background-color: #f59e0b; color: white; padding: 15px; border-radius: 20px; font-weight: bold; font-size: 16px;")
+        progress_button.setMinimumHeight(50)
         progress_button.clicked.connect(self.on_progress_button_clicked)
         button_layout.addWidget(progress_button)
         
