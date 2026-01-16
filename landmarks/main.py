@@ -54,7 +54,7 @@ def proc_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_
     img_frame = img_bgr
     return
 
-def main():
+def main() -> int:
     try:
         options = PoseLandmarkerOptions(
             base_options=BaseOptions(model_asset_path=model_path),

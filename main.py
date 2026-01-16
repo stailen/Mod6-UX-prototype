@@ -1,5 +1,5 @@
 import sys
-from PySide6.QtWidgets import QApplication, QFormLayout, QLabel, QMainWindow, QPushButton, QVBoxLayout, QWidget
+from PySide6.QtWidgets import QApplication, QLabel, QMainWindow, QPushButton, QVBoxLayout, QHBoxLayout, QWidget, QSlider
 from PySide6.QtGui import QFont
 from PySide6.QtCore import Qt
 import landmarks.main as movement_ai
@@ -8,106 +8,176 @@ class MainWindow(QMainWindow):
 
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("Health & Fitness Tracker")
+        self.setWindowTitle("Morning Check-In")
         self.setGeometry(2000, 2000, 500, 700)
         
         # Create central widget and layout
         central_widget = QWidget()
         
-        # Set blue background
-        central_widget.setStyleSheet("background-color: #1e3a8a; color: white;")
+        # Set white background
+        central_widget.setStyleSheet("background-color: #ffffff; color: #000000;")
 
         self.setCentralWidget(central_widget)
         
         # Main layout with centered content
         main_layout = QVBoxLayout(central_widget)
-        main_layout.setAlignment(Qt.AlignCenter)
-        main_layout.setSpacing(15)
+        main_layout.setContentsMargins(20, 40, 20, 40)
+        main_layout.setSpacing(30)
         
         # Title
-        title = QLabel("💪 Health & Fitness Tracker")
+        title = QLabel("Morning Check-In")
         title_font = QFont()
-        title_font.setPointSize(18)
+        title_font.setPointSize(28)
         title_font.setBold(True)
         title.setFont(title_font)
         title.setAlignment(Qt.AlignCenter)
         main_layout.addWidget(title)
         
-        # Stats form layout (centered)
-        stats = QFormLayout()
-        stats.setSpacing(10)
+        # Question and Slider Container
+        container = QWidget()
+        container_layout = QVBoxLayout(container)
+        container_layout.setContentsMargins(20, 20, 20, 20)
+        container_layout.setSpacing(20)
+        container.setStyleSheet("background-color: #f5f5f5; border-radius: 15px;")
         
-        # Heart Rate
-        hr_label = QLabel("❤️ Heart Rate:")
-        hr_value = QLabel("72 BPM")
-        hr_value.setStyleSheet("font-weight: bold; font-size: 14px;")
-        stats.addRow(hr_label, hr_value)
+        # Question
+        question = QLabel("How rested do\nyou feel today?")
+        question_font = QFont()
+        question_font.setPointSize(20)
+        question.setFont(question_font)
+        question.setAlignment(Qt.AlignCenter)
+        container_layout.addWidget(question)
         
-        # Steps
-        steps_label = QLabel("👟 Steps Today:")
-        steps_value = QLabel("8,542 / 10,000")
-        steps_value.setStyleSheet("font-weight: bold; font-size: 14px;")
-        stats.addRow(steps_label, steps_value)
+        # Slider
+        self.slider = QSlider(Qt.Horizontal)
+        self.slider.setMinimum(0)
+        self.slider.setMaximum(10)
+        self.slider.setValue(6)
+        self.slider.setMinimumHeight(40)
+        self.slider.setStyleSheet("""
+            QSlider::groove:horizontal {
+                background-color: #d0d0d0;
+                height: 4px;
+                border-radius: 2px;
+                margin: 8px 0px;
+            }
+            QSlider::handle:horizontal {
+                background-color: #ffffff;
+                border: 2px solid #999999;
+                width: 18px;
+                height: 18px;
+                margin: -7px 0px;
+                border-radius: 9px;
+            }
+            QSlider::handle:horizontal:hover {
+                background-color: #f0f0f0;
+            }
+        """)
+        self.slider.sliderMoved.connect(self.on_slider_moved)
+        self.slider.valueChanged.connect(self.on_slider_moved)
+        container_layout.addWidget(self.slider)
         
-        # Calories Burned
-        cal_label = QLabel("🔥 Calories Burned:")
-        cal_value = QLabel("524 kcal")
-        cal_value.setStyleSheet("font-weight: bold; font-size: 14px;")
-        stats.addRow(cal_label, cal_value)
+        # Low and High labels
+        range_layout = QHBoxLayout()
+        low_label = QLabel("Low")
+        low_label.setStyleSheet("color: #999999; font-size: 12px;")
+        high_label = QLabel("High")
+        high_label.setStyleSheet("color: #999999; font-size: 12px;")
+        range_layout.addWidget(low_label)
+        range_layout.addStretch()
+        range_layout.addWidget(high_label)
+        container_layout.addLayout(range_layout)
         
-        # Sleep
-        sleep_label = QLabel("😴 Sleep:")
-        sleep_value = QLabel("7h 30m")
-        sleep_value.setStyleSheet("font-weight: bold; font-size: 14px;")
-        stats.addRow(sleep_label, sleep_value)
+        # Sleep Quality Display
+        self.sleep_quality_label = QLabel("Sleep Quality: 6,4/10")
+        sleep_quality_font = QFont()
+        sleep_quality_font.setPointSize(16)
+        self.sleep_quality_label.setFont(sleep_quality_font)
+        self.sleep_quality_label.setAlignment(Qt.AlignCenter)
+        self.sleep_quality_label.setStyleSheet("color: #666666;")
+        container_layout.addWidget(self.sleep_quality_label)
         
-        # Exercise State
-        exercise_label = QLabel("Exercise Score:")
-        self.exercise_value = QLabel("none")
-        self.exercise_value.setStyleSheet("font-weight: bold; font-size: 14px; color: #4ade80;")
-        stats.addRow(exercise_label, self.exercise_value)
+        main_layout.addWidget(container)
+        
+        # Advice Container
+        advice_container = QWidget()
+        advice_container_layout = QVBoxLayout(advice_container)
+        advice_container_layout.setContentsMargins(20, 20, 20, 20)
+        advice_container_layout.setSpacing(20)
+        advice_container.setStyleSheet("background-color: #f5f5f5; border-radius: 15px;")
+        
+        # Advice Title
+        advice_title = QLabel("Advice for the day:")
+        advice_title_font = QFont()
+        advice_title_font.setPointSize(14)
+        advice_title.setFont(advice_title_font)
+        advice_title.setAlignment(Qt.AlignCenter)
+        advice_container_layout.addWidget(advice_title)
+        
+        # Advice Display
+        self.advice_label = QLabel("Perform exercise to receive advice")
+        advice_display_font = QFont()
+        advice_display_font.setPointSize(18)
+        advice_display_font.setBold(True)
+        self.advice_label.setFont(advice_display_font)
+        self.advice_label.setAlignment(Qt.AlignCenter)
+        self.advice_label.setStyleSheet("color: #5a7d99;")
+        advice_container_layout.addWidget(self.advice_label)
+        
+        main_layout.addWidget(advice_container)
+        
+        # Add stretch to push button to bottom
+        main_layout.addStretch()
+        
+        # Submit Button
+        submit_button = QPushButton("Perform Exercise")
+        submit_button.setStyleSheet("""
+            QPushButton {
+                background-color: #ffffff;
+                color: #5a7d99;
+                padding: 15px;
+                border-radius: 25px;
+                border: 2px solid #5a7d99;
+                font-weight: bold;
+                font-size: 16px;
+            }
+            QPushButton:hover {
+                background-color: #f0f0f0;
+            }
+            QPushButton:pressed {
+                background-color: #e0e0e0;
+            }
+        """)
+        submit_button.setMinimumHeight(50)
+        submit_button.clicked.connect(self.on_submit_clicked)
+        main_layout.addWidget(submit_button)
+    
+    def on_slider_moved(self):
+        value = self.slider.value()
+        # Generate a random decimal between 0-1 for the decimal part
+        import random
+        decimal = random.randint(0, 9)
+        self.sleep_quality_label.setText(f"Sleep Quality: {value},{decimal}/10")
+    
+    def on_submit_clicked(self):
+        sleep_score = self.slider.value()
+        print(f"Sleep quality submitted: {sleep_score}/10")
+        movement_score:int  = movement_ai.main()
 
-        main_layout.addLayout(stats)
-        
-        # Buttons
-        button_layout = QVBoxLayout()
-        button_layout.setAlignment(Qt.AlignCenter)
-        button_layout.setSpacing(10)
-        
-        # AI Recommendations button
-        ai_button = QPushButton("▶ Start Exercise Video")
-        ai_button.setStyleSheet("background-color: #3b82f6; color: white; padding: 15px; border-radius: 20px; font-weight: bold; font-size: 16px;")
-        ai_button.setMinimumHeight(50)
-        ai_button.clicked.connect(self.on_ai_button_clicked)
-        button_layout.addWidget(ai_button)
-        
-        # Log Workout button
-        workout_button = QPushButton("📝 Log Workout")
-        workout_button.setStyleSheet("background-color: #10b981; color: white; padding: 15px; border-radius: 20px; font-weight: bold; font-size: 16px;")
-        workout_button.setMinimumHeight(50)
-        workout_button.clicked.connect(self.on_workout_button_clicked)
-        button_layout.addWidget(workout_button)
-        
-        # View Progress button
-        progress_button = QPushButton("📊 View Progress")
-        progress_button.setStyleSheet("background-color: #f59e0b; color: white; padding: 15px; border-radius: 20px; font-weight: bold; font-size: 16px;")
-        progress_button.setMinimumHeight(50)
-        progress_button.clicked.connect(self.on_progress_button_clicked)
-        button_layout.addWidget(progress_button)
-        
-        main_layout.addLayout(button_layout)
-    
-    def on_ai_button_clicked(self):
-        score = movement_ai.main()
-        print(score)
-        self.exercise_value.setText(str(round(score)))    
-    
-    def on_workout_button_clicked(self):
-        print("Logging workout...")
-    
-    def on_progress_button_clicked(self):
-        print("Viewing progress...")
 
+        # Generate random advice
+        advice_list = ["Sleep More Tonight", "Avoid Exercise And Rest", "Today is a good day for a workout"]
+        
+        if sleep_score < 5: 
+            advice = advice_list[0]
+        elif sleep_score <= 7 or movement_score > 100:
+            advice = advice_list[1]
+        else:
+            advice = advice_list[2]
+        self.advice_label.setText(advice)
+
+
+    
 
 def main():
     app = QApplication(sys.argv)
