@@ -1,9 +1,10 @@
 #landmark model
 #model uses rgb
+from flatbuffers.flexbuffers import Object
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-model_path = 'landmarks\\model\\pose_landmarker_heavy.task'
+model_path = '/home/seba/Nextcloud/UNI/TCS/M6/UX/Mod6-UX-prototype/landmarks/model/pose_landmarker_heavy.task'
 
 #cv video capture
 #cv uses bgr
@@ -54,33 +55,37 @@ def proc_result(result: PoseLandmarkerResult, output_image: mp.Image, timestamp_
     return
 
 def main():
-    options = PoseLandmarkerOptions(
-        base_options=BaseOptions(model_asset_path=model_path),
-        running_mode=VisionRunningMode.LIVE_STREAM,
-        result_callback=proc_result)
+    try:
+        options = PoseLandmarkerOptions(
+            base_options=BaseOptions(model_asset_path=model_path),
+            running_mode=VisionRunningMode.LIVE_STREAM,
+            result_callback=proc_result)
 
-    global cap
-    cap = cv2.VideoCapture(0)
-    if not cap.isOpened():
-        raise RuntimeError("Cannot open camera")
+        global cap
+        cap = cv2.VideoCapture(0)
+        if not cap.isOpened():
+            raise RuntimeError("Cannot open camera")
 
-    with PoseLandmarker.create_from_options(options) as landmarker:
-        #loop for calculating frame
-        frame_counter = 0
-        while True:
-            ret, frame = cap.read()
-            if not ret:
-                print("Frame read failed, exiting")
-                break
-            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
-            landmarker.detect_async(mp_image, frame_counter)
-            frame_counter += 1
-            if img_frame is not None:
-                cv2.imshow("annotated", img_frame)
-            else:
-                cv2.imshow("annotated", frame)
-            if cv2.waitKey(1) & 0xFF == 27:  # ESC to quit
-                print("congrats your score is: ", score)
-                return score
-    cap.release()
-    cv2.destroyAllWindows()
+        with PoseLandmarker.create_from_options(options) as landmarker:
+            #loop for calculating frame
+            frame_counter = 0
+            while True:
+                ret, frame = cap.read()
+                if not ret:
+                    print("Frame read failed, exiting")
+                    break
+                mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=frame)
+                landmarker.detect_async(mp_image, frame_counter)
+                frame_counter += 1
+                if img_frame is not None:
+                    cv2.imshow("annotated", img_frame)
+                else:
+                    cv2.imshow("annotated", frame)
+
+                if cv2.waitKey(delay=1) & 0xFF == 27:  # ESC to quit
+                    print("congrats your score is: ", score)
+                    return score
+    finally:
+        if cap is not None:
+            cap.release()
+            cv2.destroyAllWindows()

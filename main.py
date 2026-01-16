@@ -62,10 +62,10 @@ class MainWindow(QMainWindow):
         stats.addRow(sleep_label, sleep_value)
         
         # Exercise State
-        exercise_label = QLabel("Exercise State:")
-        exercise_value = QLabel("Active")
-        exercise_value.setStyleSheet("font-weight: bold; font-size: 14px; color: #4ade80;")
-        stats.addRow(exercise_label, exercise_value)
+        exercise_label = QLabel("Exercise Score:")
+        self.exercise_value = QLabel("none")
+        self.exercise_value.setStyleSheet("font-weight: bold; font-size: 14px; color: #4ade80;")
+        stats.addRow(exercise_label, self.exercise_value)
 
         main_layout.addLayout(stats)
         
@@ -98,9 +98,9 @@ class MainWindow(QMainWindow):
         main_layout.addLayout(button_layout)
     
     def on_ai_button_clicked(self):
-        score = movement_ai.main
-        print("Getting AI recommendations...")
-        print("your score is: ", score)
+        score = movement_ai.main()
+        print(score)
+        self.exercise_value.setText(str(round(score)))    
     
     def on_workout_button_clicked(self):
         print("Logging workout...")
