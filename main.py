@@ -126,6 +126,33 @@ class MainWindow(QMainWindow):
         
         main_layout.addWidget(advice_container)
         
+        # Exercise Intensity Container
+        intensity_container = QWidget()
+        intensity_container_layout = QVBoxLayout(intensity_container)
+        intensity_container_layout.setContentsMargins(20, 20, 20, 20)
+        intensity_container_layout.setSpacing(10)
+        intensity_container.setStyleSheet("background-color: #f5f5f5; border-radius: 15px;")
+
+        intensity_title = QLabel("Exercise Intensity:")
+        intensity_title_font = QFont()
+        intensity_title_font.setPointSize(14)
+        intensity_title.setFont(intensity_title_font)
+        intensity_title.setAlignment(Qt.AlignCenter)
+        intensity_container_layout.addWidget(intensity_title)
+
+        self.intensity_label = QLabel("No exercise performed yet")
+        intensity_display_font = QFont()
+        intensity_display_font.setPointSize(16)
+        intensity_display_font.setBold(True)
+        self.intensity_label.setFont(intensity_display_font)
+        self.intensity_label.setAlignment(Qt.AlignCenter)
+        self.intensity_label.setStyleSheet("color: #666666;")
+        self.intensity_label.setWordWrap(True)
+        self.intensity_label.setMinimumHeight(60)
+        intensity_container_layout.addWidget(self.intensity_label)
+
+        main_layout.addWidget(intensity_container)
+        
         # Add stretch to push button to bottom
         main_layout.addStretch()
         
@@ -163,18 +190,53 @@ class MainWindow(QMainWindow):
         sleep_score = self.slider.value()
         print(f"Sleep quality submitted: {sleep_score}/10")
         movement_score:int  = movement_ai.main()
+        # Determine exercise intensity from movement_score and update UI
+        try:
+            ms = int(movement_score)
+        except Exception:
+            ms = movement_score
 
-
-        # Generate random advice
-        advice_list = ["Sleep More Tonight", "Avoid Exercise And Rest", "Today is a good day for a workout"]
-        
-        if sleep_score < 5: 
-            advice = advice_list[0]
-        elif sleep_score <= 7 or movement_score > 100:
-            advice = advice_list[1]
+        if ms < 50:
+            intensity = "Low"
+            rec = "Light activity — 10–20 min"
+            color = "#2e8b57"
+        elif ms < 150:
+            intensity = "Moderate"
+            rec = "Moderate — 20–40 min"
+            color = "#f39c12"
         else:
-            advice = advice_list[2]
+            intensity = "High"
+            rec = "High — 10–30 min or consider resting"
+            color = "#c0392b"
+
+        self.intensity_label.setText(f"{intensity} (movement score: {ms})")
+        self.intensity_label.setStyleSheet(f"color: {color};")
+
+        # Generate advice based on both sleep and exercise scores
+        if sleep_score < 5 and ms >= 150:
+            advice = "Have a Rest Day"
+            advice_color = "#c0392b"
+        elif sleep_score < 5:
+            advice = "Go to Sleep Early"
+            advice_color = "#c0392b"
+        elif sleep_score < 7 and ms < 50:
+            advice = "Train More"
+            advice_color = "#f39c12"
+        elif sleep_score >= 8 and ms < 50:
+            advice = "Train More"
+            advice_color = "#2e8b57"
+        elif sleep_score < 6 and ms >= 150:
+            advice = "Have a Rest Day"
+            advice_color = "#c0392b"
+        elif sleep_score >= 8 and ms >= 150:
+            advice = "Have a Rest Day"
+            advice_color = "#2e8b57"
+        else:
+            advice = "Maintain Your Routine"
+            advice_color = "#5a7d99"
+        
         self.advice_label.setText(advice)
+        self.advice_label.setStyleSheet(f"color: {advice_color};")
 
 
     
